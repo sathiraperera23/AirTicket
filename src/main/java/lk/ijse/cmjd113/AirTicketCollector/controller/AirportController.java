@@ -1,8 +1,10 @@
 package lk.ijse.cmjd113.AirTicketCollector.controller;
 
 import lk.ijse.cmjd113.AirTicketCollector.dto.AirportDTO;
+import lk.ijse.cmjd113.AirTicketCollector.service.AirportService;
 import lk.ijse.cmjd113.AirTicketCollector.service.Impl.AirportServiceImpl;
 import lk.ijse.cmjd113.AirTicketCollector.util.IDGenerate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/airports")
 public class AirportController {
+    @Autowired
+    private AirportService airportService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<AirportDTO> saveAirport(@RequestBody AirportDTO airportDTO){
-        var airportServiceImpl = new AirportServiceImpl();
-    return new ResponseEntity<>(airportServiceImpl.saveAirport(airportDTO), HttpStatus.CREATED);
+//        var airportServiceImpl = new AirportServiceImpl();
+    return new ResponseEntity<>(airportService.saveAirport(airportDTO), HttpStatus.CREATED);
 }
 
 @GetMapping("/{id}")
