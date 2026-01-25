@@ -1,23 +1,23 @@
+
 package lk.ijse.cmjd113.AirTicketCollector.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class BookingDTO {
+public class BookingDTO implements Serializable {
     private String bookingId;
-    private String booking_ref;
-    private LocalDateTime booking_date;
-    private int seat_count;
-    private double total_amt;
-    private String status;
-    private String user_id;
-    private String flight_id;
-
-
+    private LocalDateTime bookingDate;
+    private Integer seatCount;
+    private BigDecimal totalAmount;
+    private BookingStatus status;
+    private String flightId;
+    private String userId;
 }

@@ -1,6 +1,7 @@
 package lk.ijse.cmjd113.AirTicketCollector.service.Impl;
 
 import lk.ijse.cmjd113.AirTicketCollector.dto.FlightDTO;
+import lk.ijse.cmjd113.AirTicketCollector.dto.FlightStatus;
 import lk.ijse.cmjd113.AirTicketCollector.service.FlightService;
 import org.springframework.stereotype.Service;
 
@@ -11,29 +12,35 @@ import java.util.List;
 public class FlightServiceImpl implements FlightService {
 
     private final List<FlightDTO> flights = new ArrayList<>();
-    private int flightCounter = 0;
-
-    private String generateFlightId() {
-        flightCounter++;
-        return String.format("FLT-%03d", flightCounter);
-    }
 
     @Override
     public FlightDTO saveFlight(FlightDTO flightDTO) {
-        flightDTO.setFlight_id(generateFlightId());
 
-        // default values
-        flightDTO.setStatus("SCHEDULED");
-        flightDTO.setAvailable_seats(flightDTO.getTotal_seats());
+        // Validate times
+        if (flightDTO.getDepartureTime().isAfter(flightDTO.getArrivalTime())) {
+            throw new RuntimeException("Departure time cannot be after arrival time");
+        }
+
+        // Prevent duplicate flight numbers
+        boolean exists = flights.stream()
+                .anyMatch(f -> f.getFlightNo().equals(flightDTO.getFlightNo()));
+
+        if (exists) {
+            throw new RuntimeException("Flight number already exists");
+        }
+
+        // Default values based on your enum
+        flightDTO.setAvailableSeats(flightDTO.getTotalSeats());
+        flightDTO.setStatus(FlightStatus.AVAILABLE);
 
         flights.add(flightDTO);
         return flightDTO;
     }
 
     @Override
-    public FlightDTO getSelectedFlight(String id) {
+    public FlightDTO getSelectedFlight(String flightNo) {
         return flights.stream()
-                .filter(f -> f.getFlight_id().equals(id))
+                .filter(f -> f.getFlightNo().equals(flightNo))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
     }
@@ -44,23 +51,29 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void deleteFlight(String id) {
-        FlightDTO flight = getSelectedFlight(id);
+    public void deleteFlight(String flightNo) {
+        FlightDTO flight = getSelectedFlight(flightNo);
         flights.remove(flight);
     }
 
     @Override
-    public void updateFlight(String id, FlightDTO flightDTO) {
-        FlightDTO existing = getSelectedFlight(id);
+    public void updateFlight(String flightNo, FlightDTO flightDTO) {
+        FlightDTO existing = getSelectedFlight(flightNo);
 
-        existing.setFlight_no(flightDTO.getFlight_no());
-        existing.setDeparture_time(flightDTO.getDeparture_time());
-        existing.setArrival_time(flightDTO.getArrival_time());
-        existing.setTotal_seats(flightDTO.getTotal_seats());
-        existing.setAvailable_seats(flightDTO.getAvailable_seats());
-        existing.setBase_fare(flightDTO.getBase_fare());
+        // Optional validation
+        if (flightDTO.getDepartureTime() != null &&
+                flightDTO.getArrivalTime() != null &&
+                flightDTO.getDepartureTime().isAfter(flightDTO.getArrivalTime())) {
+            throw new RuntimeException("Invalid flight times");
+        }
+
+        existing.setDepartureTime(flightDTO.getDepartureTime());
+        existing.setArrivalTime(flightDTO.getArrivalTime());
+        existing.setTotalSeats(flightDTO.getTotalSeats());
+        existing.setAvailableSeats(flightDTO.getAvailableSeats());
+        existing.setBaseFare(flightDTO.getBaseFare());
         existing.setStatus(flightDTO.getStatus());
-        existing.setDep_airport_id(flightDTO.getDep_airport_id());
-        existing.setArr_airport_id(flightDTO.getArr_airport_id());
+        existing.setDepartureAirportCode(flightDTO.getDepartureAirportCode());
+        existing.setArrivalAirportCode(flightDTO.getArrivalAirportCode());
     }
 }

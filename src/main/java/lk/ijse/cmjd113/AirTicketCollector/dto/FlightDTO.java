@@ -1,24 +1,24 @@
+
 package lk.ijse.cmjd113.AirTicketCollector.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class FlightDTO {
-   private String flight_id;
-   private String flight_no;
-   private LocalDateTime departure_time;
-   private LocalDateTime arrival_time;
-   private int total_seats;
-   private int available_seats;
-   private double base_fare;
-   private String status;
-   private String dep_airport_id;
-   private String arr_airport_id;
-
+public class FlightDTO implements Serializable {
+    private String flightNo;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
+    private int totalSeats;
+    private int availableSeats;
+    private double baseFare;
+    private FlightStatus status;
+    private String departureAirportCode;
+    private String arrivalAirportCode;
 }

@@ -8,11 +8,11 @@ public interface FlightService {
 
     FlightDTO saveFlight(FlightDTO flightDTO);
 
-    FlightDTO getSelectedFlight(String id);
+    FlightDTO getSelectedFlight(String flightNo);
 
     List<FlightDTO> getAllFlights();
 
-    void deleteFlight(String id);
+    void deleteFlight(String flightNo);
 
-    void updateFlight(String id, FlightDTO flightDTO);
+    void updateFlight(String flightNo, FlightDTO flightDTO);
 }
