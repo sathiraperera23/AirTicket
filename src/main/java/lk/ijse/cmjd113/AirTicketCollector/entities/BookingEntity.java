@@ -1,29 +1,36 @@
+
 package lk.ijse.cmjd113.AirTicketCollector.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lk.ijse.cmjd113.AirTicketCollector.dto.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
-@Table(name="bookings")
-public class BookingEntity {
+@Table(name = "bookings")
+public class BookingEntity implements Serializable {
     @Id
     private String bookingId;
-    @Column(nullable=false, unique=true)
-    private String booking_ref;
-    private LocalDateTime booking_date;
-    private int seat_count;
-    private double total_amt;
-    private String status;
-    private String user_id;
-    private String flight_id;
+    private LocalDateTime bookingDate;
+    private int seatCount;
+    private double totalAmount;
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight_id")
+    private FlightEntity flightId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
