@@ -2,12 +2,14 @@ package lk.ijse.cmjd113.AirTicketCollector.service.Impl;
 
 import lk.ijse.cmjd113.AirTicketCollector.dto.PassengerDTO;
 import lk.ijse.cmjd113.AirTicketCollector.service.PassengerService;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Primary
 public class PassengerServiceImpl implements PassengerService {
 
     private final List<PassengerDTO> passengers = new ArrayList<>();
