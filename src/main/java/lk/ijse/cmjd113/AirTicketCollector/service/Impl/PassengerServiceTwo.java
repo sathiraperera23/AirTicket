@@ -6,7 +6,7 @@ import lk.ijse.cmjd113.AirTicketCollector.service.PassengerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Service
+@Service("ServiceTwo")
 public class PassengerServiceTwo implements PassengerService {
     @Override
     public PassengerDTO savePassenger(PassengerDTO passenger) {
