@@ -11,12 +11,17 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    // Temporary in-memory list (until DB is added)
     private final List<UserDTO> users = new ArrayList<>();
+    private int userCounter = 0;
+
+    private String generateUserId() {
+        userCounter++;
+        return String.format("USR-%03d", userCounter);
+    }
 
     @Override
     public UserDTO saveUser(UserDTO userDTO) {
-        userDTO.setUserID(IDGenerate.userId());
+        userDTO.setUserID(generateUserId());
         users.add(userDTO);
         return userDTO;
     }
