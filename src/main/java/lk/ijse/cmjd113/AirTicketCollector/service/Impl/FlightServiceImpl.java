@@ -20,7 +20,12 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public FlightDTO saveFlight(FlightDTO flightDTO) {
-        flightDTO.setAirport_id(generateFlightId());
+        flightDTO.setFlight_id(generateFlightId());
+
+        // default values
+        flightDTO.setStatus("SCHEDULED");
+        flightDTO.setAvailable_seats(flightDTO.getTotal_seats());
+
         flights.add(flightDTO);
         return flightDTO;
     }
@@ -28,7 +33,7 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public FlightDTO getSelectedFlight(String id) {
         return flights.stream()
-                .filter(f -> f.getAirport_id().equals(id))
+                .filter(f -> f.getFlight_id().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
     }
@@ -48,8 +53,14 @@ public class FlightServiceImpl implements FlightService {
     public void updateFlight(String id, FlightDTO flightDTO) {
         FlightDTO existing = getSelectedFlight(id);
 
-        existing.setAirport_code(flightDTO.getAirport_code());
-        existing.setAirport_name(flightDTO.getAirport_name());
-        existing.setCity(flightDTO.getCity());
+        existing.setFlight_no(flightDTO.getFlight_no());
+        existing.setDeparture_time(flightDTO.getDeparture_time());
+        existing.setArrival_time(flightDTO.getArrival_time());
+        existing.setTotal_seats(flightDTO.getTotal_seats());
+        existing.setAvailable_seats(flightDTO.getAvailable_seats());
+        existing.setBase_fare(flightDTO.getBase_fare());
+        existing.setStatus(flightDTO.getStatus());
+        existing.setDep_airport_id(flightDTO.getDep_airport_id());
+        existing.setArr_airport_id(flightDTO.getArr_airport_id());
     }
 }
