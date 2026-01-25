@@ -21,11 +21,14 @@ public class AirportController {
 
     private final AirportService airportService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<AirportDTO> saveAirport(@RequestBody AirportDTO airportDTO){
-//        var airportServiceImpl = new AirportServiceImpl();
-    return new ResponseEntity<>(airportService.saveAirport(airportDTO), HttpStatus.CREATED);
-}
+
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AirportDTO> saveAirport(
+            @RequestBody AirportDTO airportDTO){
+        airportService.saveAirport(airportDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
 @GetMapping("/{id}")
 public ResponseEntity<AirportDTO> getSelectedAirport(@PathVariable ("id") String id){

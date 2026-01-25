@@ -1,3 +1,4 @@
+
 package lk.ijse.cmjd113.AirTicketCollector.util;
 
 import lk.ijse.cmjd113.AirTicketCollector.dto.AirportDTO;
@@ -10,11 +11,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Mapper {
     private final ModelMapper modelMapper;
-//    Airport
-    public AirportDTO toAirportDto(AirportEntity airportEntity){
+    //Airport
+    public AirportDTO toAirportDTO(AirportEntity  airportEntity) {
         return modelMapper.map(airportEntity, AirportDTO.class);
     }
-    private AirportEntity toAirportEntity(AirportDTO airportDTO){
+    public AirportEntity toAirportEntity(AirportDTO  airportDTO) {
         return modelMapper.map(airportDTO, AirportEntity.class);
     }
 }

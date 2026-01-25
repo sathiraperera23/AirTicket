@@ -2,10 +2,12 @@ package lk.ijse.cmjd113.AirTicketCollector;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
+//@EnableAutoConfiguration
 public class AirTicketCollectorApplication {
 
 	public static void main(String[] args) {

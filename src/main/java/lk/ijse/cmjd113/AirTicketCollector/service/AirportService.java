@@ -5,7 +5,7 @@ import lk.ijse.cmjd113.AirTicketCollector.dto.AirportDTO;
 import java.util.List;
 
 public interface AirportService {
-    AirportDTO saveAirport(AirportDTO airportDTO);
+    void saveAirport(AirportDTO airportDTO);
     AirportDTO getSelectedAirport(String id);
     List<AirportDTO> getAllAirports();
     void deleteAirport(String id);
