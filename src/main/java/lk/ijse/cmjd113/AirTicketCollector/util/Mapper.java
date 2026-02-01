@@ -70,4 +70,24 @@ public class Mapper {
                 new TypeToken<List<UserDTO>>() {}.getType()
         );
     }
+
+    // Booking
+    public BookingDTO toBookingDTO(BookingEntity bookingEntity) {
+        BookingDTO dto = modelMapper.map(bookingEntity, BookingDTO.class);
+        dto.setFlightId(bookingEntity.getFlightId().getFlightId());
+        dto.setUserId(bookingEntity.getUser().getUserId());
+        return dto;
+    }
+
+    public BookingEntity toBookingEntity(BookingDTO bookingDTO) {
+        return modelMapper.map(bookingDTO, BookingEntity.class);
+    }
+
+    public List<BookingDTO> toBookingDTOList(List<BookingEntity> bookingEntityList) {
+        return modelMapper.map(
+                bookingEntityList,
+                new org.modelmapper.TypeToken<List<BookingDTO>>() {}.getType()
+        );
+    }
+
 }
