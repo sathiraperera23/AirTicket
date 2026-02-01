@@ -5,14 +5,9 @@ import lk.ijse.cmjd113.AirTicketCollector.dto.FlightDTO;
 import java.util.List;
 
 public interface FlightService {
-
-    FlightDTO saveFlight(FlightDTO flightDTO);
-
-    FlightDTO getSelectedFlight(String flightNo);
-
+    void saveFlight(FlightDTO flightDTO);
+    void updateFlight(String flightId,FlightDTO flightDTO);
+    void deleteFlight(String flightId);
+    FlightDTO getFlight(String flightId);
     List<FlightDTO> getAllFlights();
-
-    void deleteFlight(String flightNo);
-
-    void updateFlight(String flightNo, FlightDTO flightDTO);
 }

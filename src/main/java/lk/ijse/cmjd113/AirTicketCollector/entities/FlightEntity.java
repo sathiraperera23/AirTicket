@@ -1,32 +1,33 @@
 package lk.ijse.cmjd113.AirTicketCollector.entities;
 
 import jakarta.persistence.*;
+import lk.ijse.cmjd113.AirTicketCollector.dto.AirportDTO;
 import lk.ijse.cmjd113.AirTicketCollector.dto.FlightStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
-@Table(name = "flight")
-public class FlightEntity {
+@Table(name = "flights")
+public class FlightEntity implements Serializable {
     @Id
-    private String flight_id;
-    private String flight_no;
-    private LocalDateTime departure_time;
-    private LocalDateTime arrival_time;
-    private int total_seats;
-    private int available_seats;
-    private double base_fare;
+    private String flightNo;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
+    private int totalSeats;
+    private int availableSeats;
+    private double baseFare;
+    @Enumerated(EnumType.STRING)
     private FlightStatus status;
-    @JoinColumn(name="dep_airport")
+    @JoinColumn(name = "dep_airport")
     @ManyToOne(fetch = FetchType.LAZY)
     private AirportEntity departureAirport;
-    @JoinColumn(name="arr_airport")
+    @JoinColumn(name = "arr_airport")
     @ManyToOne(fetch = FetchType.LAZY)
     private AirportEntity arrivalAirport;
 }

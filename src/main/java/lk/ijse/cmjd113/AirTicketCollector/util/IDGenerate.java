@@ -4,6 +4,9 @@ import java.util.UUID;
 
 public class IDGenerate {
     public static String airportId(){
-        return "API-"+ UUID.randomUUID();
+        return "APT-"+ UUID.randomUUID();
+    }
+    public static String flightId(){
+        return "FLT-"+ UUID.randomUUID();
     }
 }

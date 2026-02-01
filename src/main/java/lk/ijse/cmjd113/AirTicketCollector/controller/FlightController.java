@@ -4,7 +4,6 @@ import lk.ijse.cmjd113.AirTicketCollector.dto.FlightDTO;
 import lk.ijse.cmjd113.AirTicketCollector.service.FlightService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,44 +16,28 @@ public class FlightController {
 
     private final FlightService flightService;
 
-    // CREATE FLIGHT
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<FlightDTO> saveFlight(@RequestBody FlightDTO flightDTO) {
-        return new ResponseEntity<>(
-                flightService.saveFlight(flightDTO),
-                HttpStatus.CREATED
-        );
+    @GetMapping("/{flightId}")
+    public ResponseEntity<FlightDTO> getSelectedFlight(@PathVariable String flightId) {
+        return new ResponseEntity<>(flightService.getFlight(flightId), HttpStatus.OK);
     }
 
-    // GET FLIGHT BY ID
-    @GetMapping("/{id}")
-    public ResponseEntity<FlightDTO> getSelectedFlight(@PathVariable String id) {
-        return ResponseEntity.ok(flightService.getSelectedFlight(id));
+    @PostMapping
+    public ResponseEntity<Void> saveFlight(@RequestBody FlightDTO flight) {
+        flightService.saveFlight(flight);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-    // GET ALL FLIGHTS
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FlightDTO>> getAllFlights() {
-        return ResponseEntity.ok(flightService.getAllFlights());
+    @GetMapping
+    public  ResponseEntity<List<FlightDTO>> getAllFlights(){
+        return new ResponseEntity<>(flightService.getAllFlights(), HttpStatus.OK);
     }
-
-    // DELETE FLIGHT
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFlight(@PathVariable String id) {
-        flightService.deleteFlight(id);
+    @DeleteMapping("/{flightId}")
+    public ResponseEntity<Void> deleteFlight(@PathVariable String flightId){
+        flightService.deleteFlight(flightId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    // UPDATE FLIGHT
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateFlight(
-            @RequestBody FlightDTO flightDTO,
-            @PathVariable String id
-    ) {
-        flightService.updateFlight(id, flightDTO);
+    @PatchMapping("/{flightId}")
+    public ResponseEntity<Void> updatePassenger(@PathVariable String flightId,@RequestBody FlightDTO flight){
+        flightService.updateFlight(flightId, flight);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
