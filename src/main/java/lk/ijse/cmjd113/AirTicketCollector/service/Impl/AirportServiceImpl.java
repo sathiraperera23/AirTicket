@@ -1,3 +1,4 @@
+
 package lk.ijse.cmjd113.AirTicketCollector.service.Impl;
 
 import jakarta.transaction.Transactional;
@@ -8,40 +9,51 @@ import lk.ijse.cmjd113.AirTicketCollector.service.AirportService;
 import lk.ijse.cmjd113.AirTicketCollector.util.IDGenerate;
 import lk.ijse.cmjd113.AirTicketCollector.util.Mapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class AirportServiceImpl implements AirportService {
-    private final AirportDAO airportDAO;
+    private final AirportDAO airportDao;
     private final Mapper mapper;
     @Override
     public void saveAirport(AirportDTO airport) {
         airport.setAirportId(IDGenerate.airportId());
-        AirportEntity airportEntity = mapper.toAirportEntity(airport);
-        airportDAO.save(airportEntity);
+        AirportEntity airportEntity =
+                mapper.toAirportEntity(airport);
+        airportDao.save(airportEntity);
     }
 
     @Override
-    public AirportDTO getSelectedAirport(String id) {
-        return null;
+    public AirportDTO getSelectedAirport(String airportId) {
+        var foundAirport = airportDao.findById(airportId)
+                .orElseThrow(() -> new RuntimeException("Data Not Found"));
+        return mapper.toAirportDTO(foundAirport);
     }
 
     @Override
     public List<AirportDTO> getAllAirports() {
-        return List.of();
+        return mapper.toAirportDTOList( airportDao.findAll());
     }
 
     @Override
-    public void deleteAirport(String id) {
-
+    public void deleteAirport(String airportId) {
+        var foundAirport = airportDao.findById(airportId)
+                .orElseThrow(() -> new RuntimeException("Data Not Found"));
+        airportDao.delete(foundAirport);
     }
 
     @Override
-    public void updateAirport(String id, AirportDTO airportDTO) {
+    public void updateAirport(String airportId, AirportDTO updatedAirport) {
+        var foundAirport = airportDao.findById(airportId)
+                .orElseThrow(() -> new RuntimeException("Data Not Found"));
+        foundAirport.setAirportCode(updatedAirport.getAirportCode());
+        foundAirport.setCity(updatedAirport.getCity());
+        foundAirport.setCountry(updatedAirport.getCountry());
+        foundAirport.setName(updatedAirport.getName());
 
     }
 }
