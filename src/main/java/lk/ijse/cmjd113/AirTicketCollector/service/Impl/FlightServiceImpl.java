@@ -1,4 +1,3 @@
-
 package lk.ijse.cmjd113.AirTicketCollector.service.Impl;
 
 import jakarta.transaction.Transactional;
@@ -45,16 +44,21 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public void deleteFlight(String flightId) {
-
+        flightDao.findById(flightId)
+                .orElseThrow(() -> new DataNotFoundException("Flight Not Found"));
+        flightDao.deleteById(flightId);
     }
 
     @Override
     public FlightDTO getFlight(String flightId) {
-        return null;
+        var foundFlight =
+                flightDao.findById(flightId)
+                        .orElseThrow(() -> new DataNotFoundException("Flight Not Found"));
+        return mapper.toFlightDTO(foundFlight);
     }
 
     @Override
     public List<FlightDTO> getAllFlights() {
-        return List.of();
+        return  mapper.toFlightDTOList(flightDao.findAll());
     }
 }
