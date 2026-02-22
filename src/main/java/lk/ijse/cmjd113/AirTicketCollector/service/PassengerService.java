@@ -8,11 +8,11 @@ public interface PassengerService {
 
     PassengerDTO savePassenger(PassengerDTO passengerDTO);
 
-    PassengerDTO getSelectedPassenger(String id);
+    PassengerDTO getSelectedPassenger(String passengerId);
 
     List<PassengerDTO> getAllPassengers();
 
-    void deletePassenger(String id);
+    void deletePassenger(String passengerId);
 
-    void updatePassenger(String id, PassengerDTO passengerDTO);
+    void updatePassenger(String passengerId, PassengerDTO passengerDTO);
 }

@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class PassengerDTO {
-    private String passenger_id;
-    private String first_name;
-    private String last_name;
+    private String passengerId;
+    private String firstName;
+    private String lastName;
     private int age;
     private String gender;
-    private String contact_number;
-    private String seat_number;
-    private String booking_id;
+    private String contactNumber;
+    private String seatNumber;
+    private String bookingId; // reference BookingEntity by ID only
 }

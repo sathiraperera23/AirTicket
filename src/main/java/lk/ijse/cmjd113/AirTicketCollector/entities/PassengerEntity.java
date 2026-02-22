@@ -5,21 +5,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="passengers")
-public class PassengerEntity {
+@Table(name = "passengers")
+public class PassengerEntity implements Serializable {
+
     @Id
-    private String passenger_id;
-    private String first_name;
-    private String last_name;
+    private String passengerId;
+
+    private String firstName;
+    private String lastName;
     private int age;
     private String gender;
-    private String contact_number;
-    private String seat_number;
+    private String contactNumber;
+    private String seatNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
-    private BookingEntity booking_id;
+    private BookingEntity booking; // ⚠ renamed from booking_id -> booking
 }

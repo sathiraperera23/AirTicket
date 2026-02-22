@@ -7,6 +7,7 @@ import lk.ijse.cmjd113.AirTicketCollector.dao.UserDAO;
 import lk.ijse.cmjd113.AirTicketCollector.dto.BookingDTO;
 import lk.ijse.cmjd113.AirTicketCollector.entities.BookingEntity;
 import lk.ijse.cmjd113.AirTicketCollector.exception.DataNotFoundException;
+import lk.ijse.cmjd113.AirTicketCollector.exception.DataSaveException;
 import lk.ijse.cmjd113.AirTicketCollector.service.BookingService;
 import lk.ijse.cmjd113.AirTicketCollector.util.IDGenerate;
 import lk.ijse.cmjd113.AirTicketCollector.util.Mapper;
@@ -26,22 +27,28 @@ public class BookingServiceImpl implements BookingService {
     private final UserDAO userDAO;
     private final Mapper mapper;
 
+
     @Override
-    public void saveBooking(BookingDTO bookingDTO) {
+    public void saveBooking(BookingDTO booking) {
 
-        var flight = flightDAO.findById(bookingDTO.getFlightId())
-                .orElseThrow(() -> new DataNotFoundException("Flight Not Found"));
+        var foundFlight = flightDAO.findById(booking.getFlightId())
+                .orElseThrow(() -> new DataNotFoundException("Flight not found"));
 
-        var user = userDAO.findById(bookingDTO.getUserId())
-                .orElseThrow(() -> new DataNotFoundException("User Not Found"));
+        var foundUser = userDAO.findById(booking.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-        BookingEntity booking = mapper.toBookingEntity(bookingDTO);
-        booking.setBookingId(IDGenerate.bookingId());
-        booking.setBookingDate(LocalDateTime.now());
-        booking.setFlightId(flight);
-        booking.setUser(user);
+        var bookingEntity = mapper.toBookingEntity(booking);
+        bookingEntity.setFlightId(foundFlight);
+        bookingEntity.setUser(foundUser);
+        bookingEntity.setBookingId(IDGenerate.bookingId());
 
-        bookingDAO.save(booking);
+        //Todo:Update seat count
+        var availableSeats = flightDAO.getAvailableSeats(booking.getFlightId());
+        if(availableSeats == 0 || availableSeats < booking.getSeatCount() ){
+            throw new DataSaveException("No available seats found or exceed the seat limit");
+        }
+        bookingDAO.save(bookingEntity);
+        flightDAO.deductAvlSeats(booking.getSeatCount(),booking.getFlightId());
     }
 
     @Override
@@ -59,21 +66,41 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void deleteBooking(String bookingId) {
-        bookingDAO.findById(bookingId)
-                .orElseThrow(() -> new DataNotFoundException("Booking Not Found"));
+        var foundBooking = bookingDAO.findById(bookingId)
+                .orElseThrow(() -> new DataNotFoundException("Booking not found"));
         bookingDAO.deleteById(bookingId);
+        flightDAO.addAvlSeats(foundBooking.getSeatCount(),foundBooking.getFlightId().getFlightNo());
     }
 
+
     @Override
-    public void updateBooking(String bookingId, BookingDTO bookingDTO) {
+    public void updateBooking(String bookingId, BookingDTO booking) {
+        var foundBooking = bookingDAO.findById(bookingId)
+                .orElseThrow(() -> new DataNotFoundException("Booking not found"));
 
-        BookingEntity existingBooking = bookingDAO.findById(bookingId)
-                .orElseThrow(() -> new DataNotFoundException("Booking Not Found"));
+        var foundFlight = flightDAO.findById(booking.getFlightId())
+                .orElseThrow(() -> new DataNotFoundException("Flight not found"));
 
-        existingBooking.setSeatCount(bookingDTO.getSeatCount());
-        existingBooking.setTotalAmount(bookingDTO.getTotalAmount());
-        existingBooking.setStatus(bookingDTO.getStatus());
+        var foundUser = userDAO.findById(booking.getUserId())
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-        bookingDAO.save(existingBooking);
+        //Handle seat avilabbility
+        var newSeatCount = booking.getSeatCount();
+        var prevSeatCount = foundBooking.getSeatCount();
+        var seatCountDiff = newSeatCount - prevSeatCount;
+        // 5 - 2 = 3
+        // 5 - 8 = -3
+
+        if(seatCountDiff > 0){
+            flightDAO.deductAvlSeats(seatCountDiff,booking.getFlightId());
+        }else {
+            flightDAO.addAvlSeats(Math.abs(seatCountDiff),booking.getFlightId());
+        }
+        foundBooking.setStatus(booking.getStatus());
+        foundBooking.setBookingDate(booking.getBookingDate());
+        foundBooking.setSeatCount(booking.getSeatCount());
+        foundBooking.setTotalAmount(booking.getTotalAmount());
+        foundBooking.setFlightId(foundFlight);
+        foundBooking.setUser(foundUser);
     }
 }
